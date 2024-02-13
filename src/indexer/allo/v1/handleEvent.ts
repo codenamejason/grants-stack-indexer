@@ -74,7 +74,7 @@ export async function handleEvent(
     event,
     subscribeToContract,
     readContract,
-    context: { db, ipfsGet, priceProvider, logger },
+    context: { rpcClient, db, ipfsGet, priceProvider, logger },
   } = args;
 
   switch (event.name) {
@@ -249,6 +249,12 @@ export async function handleEvent(
           : "AlloV1/RoundImplementation/V2";
 
       const roundId = parseAddress(event.params.roundAddress);
+
+      const tx = await rpcClient.getTransaction({
+        hash: event.transactionHash,
+      });
+
+      const createdBy = tx.from;
 
       subscribeToContract({
         contract,
